@@ -1,12 +1,14 @@
-FROM quay.io/bedrock/alpine:3.16.2 AS builder
+FROM quay.io/bedrock/alpine:3.17.0 AS base
 
-RUN apk --no-cache add gcc audit-dev musl-dev
+FROM base AS builder
+RUN apk --no-cache add gcc audit-dev musl-dev pythonispython3
 
-COPY audit-status.c .
-RUN gcc -o audit-status audit-status.c -l audit
+COPY audit-status.c error-table.py ./
+RUN python error-table.py > error-table.h
+RUN gcc -Wpedantic -Wall -Wextra -Werror -o audit-status audit-status.c -l audit
 
-FROM quay.io/bedrock/alpine:3.16.2
-
+FROM base AS output
 RUN apk --no-cache add audit-libs
 
 COPY --from=builder /audit-status /usr/local/bin/audit-status
+RUN audit-status
