@@ -5,6 +5,7 @@ RUN apk --no-cache add gcc audit-dev musl-dev pythonispython3
 
 COPY audit-status.c error-table.py ./
 RUN python error-table.py > error-table.h
+RUN cat error-table.h
 RUN gcc -Wpedantic -Wall -Wextra -Werror -o audit-status audit-status.c -l audit
 
 FROM base AS output
