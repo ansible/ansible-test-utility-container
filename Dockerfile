@@ -1,4 +1,4 @@
-FROM quay.io/bedrock/alpine:3.19.1 AS base
+FROM quay.io/bedrock/alpine:3.20.0 AS base
 
 FROM base AS builder
 RUN apk --no-cache add gcc audit-dev musl-dev python3
